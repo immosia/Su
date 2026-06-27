@@ -1,0 +1,1291 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>جیمیل موقت | TempMail</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            background: #080c18;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            overflow: hidden;
+        }
+
+        /* ===== SPLASH ===== */
+        .splash {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #080c18;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            transition: opacity 0.6s ease, transform 0.6s ease;
+        }
+
+        .splash.hide {
+            opacity: 0;
+            transform: scale(1.1);
+            pointer-events: none;
+        }
+
+        .splash .icon-big {
+            font-size: 5rem;
+            color: #4fc3f7;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        .splash h1 {
+            font-size: 2.8rem;
+            color: #e8f0fe;
+            margin-top: 10px;
+        }
+
+        .splash h1 span {
+            color: #4fc3f7;
+        }
+
+        .splash .sub {
+            color: #5a708a;
+            font-size: 1rem;
+            margin-top: 6px;
+        }
+
+        .splash .loader {
+            margin-top: 30px;
+            width: 40px;
+            height: 40px;
+            border: 3px solid #1e3048;
+            border-top: 3px solid #4fc3f7;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        /* ===== PARTICLES ===== */
+        #particles-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        .app-container {
+            width: 100%;
+            max-width: 900px;
+            background: #0f1a2e;
+            border: 1px solid #1e3048;
+            border-radius: 24px;
+            padding: 24px 28px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.9);
+            position: relative;
+            z-index: 1;
+            backdrop-filter: blur(10px);
+            background: rgba(15, 26, 46, 0.85);
+        }
+
+        .topbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 24px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid #1e3048;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .topbar .left {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .topbar .left .menu-btn {
+            background: none;
+            border: none;
+            color: #8aa4c8;
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 4px 8px;
+            border-radius: 8px;
+            transition: 0.2s;
+        }
+
+        .topbar .left .menu-btn:hover {
+            background: rgba(255, 255, 255, 0.04);
+            color: #e8f0fe;
+        }
+
+        .topbar .left .logo i {
+            font-size: 28px;
+            color: #4fc3f7;
+        }
+
+        .topbar .left .logo h1 {
+            font-size: 1.5rem;
+            color: #e8f0fe;
+            display: inline;
+        }
+
+        .topbar .left .logo h1 span {
+            color: #4fc3f7;
+        }
+
+        .sidebar {
+            position: fixed;
+            top: 0;
+            right: 0;
+            width: 280px;
+            height: 100%;
+            background: #0f1a2e;
+            border-left: 1px solid #1e3048;
+            padding: 24px 20px;
+            transform: translateX(100%);
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            z-index: 1000;
+            overflow-y: auto;
+            box-shadow: -10px 0 40px rgba(0, 0, 0, 0.6);
+        }
+
+        .sidebar.open {
+            transform: translateX(0);
+        }
+
+        .sidebar .close-btn {
+            background: none;
+            border: none;
+            color: #8aa4c8;
+            font-size: 1.5rem;
+            cursor: pointer;
+            float: left;
+            padding: 4px 8px;
+            border-radius: 8px;
+            transition: 0.2s;
+        }
+
+        .sidebar .close-btn:hover {
+            background: rgba(239, 83, 80, 0.1);
+            color: #ef5350;
+        }
+
+        .sidebar .user-info {
+            text-align: center;
+            padding: 16px 0 24px 0;
+            border-bottom: 1px solid #1e3048;
+            margin-bottom: 20px;
+        }
+
+        .sidebar .user-info .avatar {
+            width: 64px;
+            height: 64px;
+            background: linear-gradient(135deg, #4fc3f7, #7c4dff);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #fff;
+            margin: 0 auto 10px;
+            box-shadow: 0 4px 20px rgba(79, 195, 247, 0.2);
+        }
+
+        .sidebar .user-info .name {
+            color: #e8f0fe;
+            font-size: 1.1rem;
+            font-weight: 700;
+        }
+
+        .sidebar .user-info .sub {
+            color: #5a708a;
+            font-size: 0.8rem;
+            direction: ltr;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .sidebar .menu-item {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 12px 16px;
+            color: #8aa4c8;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: 0.2s;
+            margin-bottom: 4px;
+        }
+
+        .sidebar .menu-item:hover {
+            background: rgba(79, 195, 247, 0.06);
+            color: #e8f0fe;
+        }
+
+        .sidebar .menu-item.active {
+            background: rgba(79, 195, 247, 0.12);
+            color: #4fc3f7;
+        }
+
+        .sidebar .menu-item i {
+            width: 22px;
+            font-size: 1.1rem;
+        }
+
+        .sidebar .menu-item .badge {
+            background: #4fc3f7;
+            color: #080c18;
+            font-size: 0.6rem;
+            font-weight: 700;
+            padding: 2px 10px;
+            border-radius: 12px;
+            margin-right: auto;
+        }
+
+        .sidebar .divider {
+            height: 1px;
+            background: #1e3048;
+            margin: 12px 0;
+        }
+
+        .sidebar .account-item {
+            font-size: 0.8rem;
+            padding: 8px 16px 8px 32px;
+            direction: ltr;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .sidebar .account-item .check {
+            color: #4fc3f7;
+            font-size: 0.6rem;
+            margin-right: auto;
+        }
+
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 999;
+            display: none;
+            backdrop-filter: blur(4px);
+        }
+
+        .overlay.show {
+            display: block;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+            margin-bottom: 18px;
+        }
+
+        .stats .stat {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid #1e3048;
+            border-radius: 12px;
+            padding: 12px;
+            text-align: center;
+        }
+
+        .stats .stat .num {
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: #4fc3f7;
+            display: block;
+        }
+
+        .stats .stat .label {
+            font-size: 0.7rem;
+            color: #8aa4c8;
+        }
+
+        .email-display {
+            color: #4fc3f7;
+            font-weight: 600;
+            direction: ltr;
+            font-size: 0.9rem;
+            background: rgba(79, 195, 247, 0.08);
+            padding: 6px 18px;
+            border-radius: 20px;
+            border: 1px solid rgba(79, 195, 247, 0.15);
+            cursor: pointer;
+            display: inline-block;
+            margin-bottom: 12px;
+        }
+
+        .email-display:hover {
+            background: rgba(79, 195, 247, 0.15);
+        }
+
+        .quick-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 18px;
+        }
+
+        .quick-actions button {
+            padding: 8px 18px;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid #1e3048;
+            border-radius: 20px;
+            color: #8aa4c8;
+            font-size: 0.8rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .quick-actions button:hover {
+            background: rgba(79, 195, 247, 0.08);
+            border-color: #4fc3f7;
+            color: #e8f0fe;
+        }
+
+        .quick-actions button i {
+            color: #4fc3f7;
+        }
+
+        .quick-actions .btn-danger i {
+            color: #ef5350;
+        }
+
+        .quick-actions .btn-danger:hover {
+            border-color: #ef5350;
+        }
+
+        .inbox-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+            color: #8aa4c8;
+            font-size: 0.85rem;
+        }
+
+        .inbox-header .count {
+            background: rgba(79, 195, 247, 0.12);
+            padding: 2px 14px;
+            border-radius: 20px;
+            color: #4fc3f7;
+            font-weight: 600;
+        }
+
+        #inbox {
+            background: rgba(0, 0, 0, 0.25);
+            border-radius: 12px;
+            padding: 6px 4px;
+            min-height: 200px;
+            max-height: 340px;
+            overflow-y: auto;
+            border: 1px solid #1e3048;
+        }
+
+        #inbox::-webkit-scrollbar {
+            width: 4px;
+        }
+        #inbox::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        #inbox::-webkit-scrollbar-thumb {
+            background: #1e3048;
+            border-radius: 10px;
+        }
+
+        .msg-item {
+            background: #162236;
+            margin: 4px 4px;
+            padding: 12px 16px;
+            border-radius: 12px;
+            border-right: 3px solid #4fc3f7;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .msg-item:hover {
+            background: #1a2d48;
+            transform: translateX(-3px);
+        }
+
+        .msg-item.active {
+            background: #1a2d4a;
+            border-right-color: #81d4fa;
+        }
+
+        .msg-item .msg-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .msg-item .from {
+            font-weight: 700;
+            color: #b8d4f0;
+            font-size: 0.9rem;
+        }
+
+        .msg-item .from i {
+            color: #4fc3f7;
+            margin-left: 6px;
+        }
+
+        .msg-item .date {
+            font-size: 0.65rem;
+            color: #5a708a;
+            direction: ltr;
+        }
+
+        .msg-item .subject {
+            font-weight: 600;
+            color: #e8f0fe;
+            margin: 3px 0 2px;
+            font-size: 0.9rem;
+        }
+
+        .msg-item .snippet {
+            font-size: 0.78rem;
+            color: #8aa4c8;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .msg-item .badge-unread {
+            background: #4fc3f7;
+            color: #0a0f1a;
+            font-size: 0.55rem;
+            font-weight: 700;
+            padding: 2px 10px;
+            border-radius: 12px;
+            margin-right: 6px;
+        }
+
+        .empty-box {
+            color: #8aa4c8;
+            text-align: center;
+            padding: 40px 10px;
+        }
+
+        .empty-box i {
+            font-size: 2.8rem;
+            display: block;
+            margin-bottom: 12px;
+            opacity: 0.3;
+            color: #4fc3f7;
+        }
+
+        .empty-box .sub-text {
+            font-size: 0.8rem;
+            opacity: 0.5;
+        }
+
+        #message-body {
+            margin-top: 14px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 12px;
+            padding: 16px 20px;
+            border: 1px solid #1e3048;
+            color: #e8f0fe;
+            font-size: 0.88rem;
+            max-height: 200px;
+            overflow-y: auto;
+            display: none;
+            white-space: pre-wrap;
+            word-break: break-word;
+            line-height: 1.7;
+        }
+
+        #message-body.show {
+            display: block;
+        }
+
+        #message-body .msg-meta {
+            color: #8aa4c8;
+            font-size: 0.75rem;
+            border-bottom: 1px solid #1e3048;
+            padding-bottom: 10px;
+            margin-bottom: 10px;
+        }
+
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%) translateY(20px);
+            background: #1a2a40;
+            color: #e8f0fe;
+            padding: 14px 28px;
+            border-radius: 12px;
+            border: 1px solid #1e3048;
+            box-shadow: 0 16px 40px rgba(0, 0, 0, 0.7);
+            font-size: 0.9rem;
+            opacity: 0;
+            transition: 0.4s;
+            pointer-events: none;
+            z-index: 9999;
+            max-width: 90%;
+        }
+
+        .toast.show {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+
+        .toast i {
+            margin-left: 10px;
+        }
+
+        .toast.success i {
+            color: #66bb6a;
+        }
+        .toast.error i {
+            color: #ef5350;
+        }
+        .toast.info i {
+            color: #4fc3f7;
+        }
+
+        .footer-text {
+            margin-top: 14px;
+            color: #5a708a;
+            font-size: 0.65rem;
+            text-align: center;
+            opacity: 0.5;
+        }
+
+        .big-btn {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, #4fc3f7, #0288d1);
+            border: none;
+            border-radius: 12px;
+            color: #fff;
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 16px;
+        }
+
+        .big-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px rgba(79, 195, 247, 0.35);
+        }
+
+        @keyframes float {
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-15px);
+            }
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        @media (max-width: 650px) {
+            .app-container {
+                padding: 16px 14px;
+            }
+            .topbar .left .logo h1 {
+                font-size: 1.1rem;
+            }
+            .stats {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .quick-actions button {
+                flex: 1 0 40%;
+                justify-content: center;
+                font-size: 0.7rem;
+                padding: 6px 12px;
+            }
+            .sidebar {
+                width: 260px;
+            }
+            .splash h1 {
+                font-size: 2rem;
+            }
+            .splash .icon-big {
+                font-size: 3.5rem;
+            }
+        }
+
+        @media (max-width: 420px) {
+            .topbar .left .logo i {
+                font-size: 20px;
+            }
+            .topbar .left .logo h1 {
+                font-size: 0.95rem;
+            }
+            .stats .stat .num {
+                font-size: 1.2rem;
+            }
+            .splash h1 {
+                font-size: 1.6rem;
+            }
+            .splash .icon-big {
+                font-size: 3rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ===== SPLASH ===== -->
+    <div class="splash" id="splash">
+        <div class="icon-big"><i class="fas fa-envelope"></i></div>
+        <h1>پست<span>موقت</span></h1>
+        <div class="sub">📬 ایمیل موقت یکبار مصرف</div>
+        <div class="loader"></div>
+    </div>
+
+    <!-- ===== PARTICLES ===== -->
+    <canvas id="particles-canvas"></canvas>
+
+    <div class="app-container">
+        <div class="topbar">
+            <div class="left">
+                <button class="menu-btn" id="openSidebar"><i class="fas fa-bars"></i></button>
+                <div class="logo">
+                    <i class="fas fa-envelope"></i>
+                    <h1>پست<span>موقت</span></h1>
+                </div>
+            </div>
+        </div>
+
+        <div class="stats">
+            <div class="stat"><span class="num" id="statEmails">0</span><span class="label">📧 ایمیل‌ها</span></div>
+            <div class="stat"><span class="num" id="statUnread">0</span><span class="label">🆕 نخونده</span></div>
+            <div class="stat"><span class="num" id="statAccounts">0</span><span class="label">📬 حساب‌ها</span></div>
+            <div class="stat"><span class="num" id="statLast">--:--</span><span class="label">⏱ آخرین</span></div>
+        </div>
+
+        <button class="big-btn" id="newEmailBtn"><i class="fas fa-plus-circle"></i> ساخت ایمیل جدید</button>
+
+        <div class="email-display" id="emailDisplay" title="برای کپی کلیک کن">---</div>
+
+        <div class="quick-actions">
+            <button id="refreshBtn"><i class="fas fa-sync-alt"></i> بروزرسانی</button>
+            <button id="copyBtn"><i class="fas fa-copy"></i> کپی</button>
+            <button id="deleteAllBtn" class="btn-danger"><i class="fas fa-trash-alt"></i> پاک‌کن</button>
+        </div>
+
+        <div class="inbox-header">
+            <span>📬 صندوق ورودی</span>
+            <span class="count" id="unreadCount">۰ نخونده</span>
+        </div>
+
+        <div id="inbox">
+            <div class="empty-box">
+                <i class="fas fa-inbox"></i>
+                <div>📭 صندوق ورودی خالی است</div>
+                <div class="sub-text">📤 روی دکمه «ساخت ایمیل جدید» کلیک کن</div>
+            </div>
+        </div>
+
+        <div id="message-body"></div>
+
+        <div class="footer-text">
+            <i class="fas fa-database"></i> ایمیل‌ها در مرورگر ذخیره می‌شوند
+        </div>
+    </div>
+
+    <div class="sidebar" id="sidebar">
+        <button class="close-btn" id="closeSidebar"><i class="fas fa-times"></i></button>
+
+        <div class="user-info">
+            <div class="avatar" id="sidebarAvatar">📧</div>
+            <div class="name" id="sidebarName">ایمیل‌های من</div>
+            <div class="sub" id="sidebarEmail">---</div>
+        </div>
+
+        <div class="menu-item active"><i class="fas fa-inbox"></i><span>صندوق ورودی</span><span class="badge" id="sidebarBadge">0</span></div>
+        <div class="menu-item" id="sidebarNewEmail"><i class="fas fa-plus-circle"></i><span>ایمیل جدید</span></div>
+        <div class="menu-item" id="sidebarRefresh"><i class="fas fa-sync-alt"></i><span>بروزرسانی</span></div>
+
+        <div class="divider"></div>
+
+        <div class="menu-item" style="color:#5a708a;cursor:default;"><i class="fas fa-envelope"></i><span style="font-size:0.8rem;">حساب‌های من</span></div>
+        <div id="sidebarAccounts"></div>
+    </div>
+
+    <div class="overlay" id="overlay"></div>
+
+    <div class="toast" id="toast">
+        <i class="fas fa-check-circle"></i>
+        <span id="toastMessage">عملیات موفق</span>
+    </div>
+
+    <script>
+        // ===== PARTICLES =====
+        const canvas = document.getElementById('particles-canvas');
+        const ctx = canvas.getContext('2d');
+        let particles = [];
+        let w, h;
+
+        function resize() {
+            w = canvas.width = window.innerWidth;
+            h = canvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resize);
+        resize();
+
+        class Particle {
+            constructor() {
+                this.x = Math.random() * w;
+                this.y = Math.random() * h;
+                this.size = Math.random() * 2 + 0.5;
+                this.speedX = (Math.random() - 0.5) * 0.5;
+                this.speedY = (Math.random() - 0.5) * 0.5;
+                this.opacity = Math.random() * 0.5 + 0.1;
+            }
+            update() {
+                this.x += this.speedX;
+                this.y += this.speedY;
+                if (this.x < 0 || this.x > w) this.speedX *= -1;
+                if (this.y < 0 || this.y > h) this.speedY *= -1;
+            }
+            draw() {
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fillStyle = `rgba(79, 195, 247, ${this.opacity})`;
+                ctx.fill();
+            }
+        }
+
+        for (let i = 0; i < 80; i++) {
+            particles.push(new Particle());
+        }
+
+        function animateParticles() {
+            ctx.clearRect(0, 0, w, h);
+            particles.forEach(p => {
+                p.update();
+                p.draw();
+            });
+            // lines
+            for (let i = 0; i < particles.length; i++) {
+                for (let j = i + 1; j < particles.length; j++) {
+                    const dx = particles[i].x - particles[j].x;
+                    const dy = particles[i].y - particles[j].y;
+                    const dist = Math.sqrt(dx * dx + dy * dy);
+                    if (dist < 120) {
+                        ctx.beginPath();
+                        ctx.moveTo(particles[i].x, particles[i].y);
+                        ctx.lineTo(particles[j].x, particles[j].y);
+                        ctx.strokeStyle = `rgba(79, 195, 247, ${0.08 * (1 - dist / 120)})`;
+                        ctx.lineWidth = 0.5;
+                        ctx.stroke();
+                    }
+                }
+            }
+            requestAnimationFrame(animateParticles);
+        }
+        animateParticles();
+
+        // ===== SPLASH =====
+        setTimeout(() => {
+            document.getElementById('splash').classList.add('hide');
+        }, 1500);
+
+        // ===== REST OF APP =====
+        const API = 'https://api.mail.tm';
+        const STORAGE_KEY = 'tempmail_accounts';
+
+        let accounts = [];
+        let currentAccount = null;
+        let messages = [];
+        let selectedId = null;
+        let toastTimer = null;
+        let refreshInterval = null;
+        let isInitializing = true;
+
+        // ===== SWIPE =====
+        let touchStartX = 0;
+        let isSwiping = false;
+
+        const sidebarEl = document.getElementById('sidebar');
+        const overlayEl = document.getElementById('overlay');
+
+        function openSidebar() {
+            sidebarEl.classList.add('open');
+            overlayEl.classList.add('show');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeSidebar() {
+            sidebarEl.classList.remove('open');
+            overlayEl.classList.remove('show');
+            document.body.style.overflow = '';
+        }
+
+        document.addEventListener('touchstart', function(e) {
+            touchStartX = e.touches[0].clientX;
+            isSwiping = true;
+        }, { passive: true });
+
+        document.addEventListener('touchmove', function(e) {
+            if (!isSwiping) return;
+            const deltaX = e.touches[0].clientX - touchStartX;
+            if (Math.abs(deltaX) > 30) {
+                e.preventDefault();
+            }
+        }, { passive: false });
+
+        document.addEventListener('touchend', function(e) {
+            if (!isSwiping) return;
+            isSwiping = false;
+            const deltaX = e.changedTouches[0].clientX - touchStartX;
+            if (Math.abs(deltaX) < 40) return;
+
+            if (deltaX < 0 && !sidebarEl.classList.contains('open')) {
+                openSidebar();
+            } else if (deltaX > 0 && sidebarEl.classList.contains('open')) {
+                closeSidebar();
+            }
+        }, { passive: true });
+
+        // ===== DOM =====
+        const inboxEl = document.getElementById('inbox');
+        const emailDisplay = document.getElementById('emailDisplay');
+        const msgBodyEl = document.getElementById('message-body');
+        const statEmails = document.getElementById('statEmails');
+        const statUnread = document.getElementById('statUnread');
+        const statAccounts = document.getElementById('statAccounts');
+        const statLast = document.getElementById('statLast');
+        const unreadCount = document.getElementById('unreadCount');
+        const sidebarBadge = document.getElementById('sidebarBadge');
+        const sidebarAccounts = document.getElementById('sidebarAccounts');
+        const sidebarEmail = document.getElementById('sidebarEmail');
+
+        function toast(msg, type = 'success') {
+            const t = document.getElementById('toast');
+            const icon = t.querySelector('i');
+            const m = document.getElementById('toastMessage');
+            m.textContent = msg;
+            t.className = 'toast ' + type + ' show';
+            icon.className = type === 'success' ? 'fas fa-check-circle' :
+                type === 'error' ? 'fas fa-exclamation-circle' : 'fas fa-info-circle';
+            clearTimeout(toastTimer);
+            toastTimer = setTimeout(() => t.classList.remove('show'), 3000);
+        }
+
+        function formatDate(d) {
+            if (!d) return '';
+            return new Date(d).toLocaleString('fa-IR', { hour12: false });
+        }
+
+        function escapeHtml(t) {
+            if (!t) return '';
+            return t.replace(/[&<>"]/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' } [m] || m));
+        }
+
+        function getTime() {
+            const now = new Date();
+            return now.getHours().toString().padStart(2, '0') + ':' + now.getMinutes().toString().padStart(2, '0');
+        }
+
+        function genUsername() {
+            const p = ['user', 'mail', 'temp', 'my', 'test', 'hello', 'world', 'dev', 'web', 'cloud'];
+            return p[Math.floor(Math.random() * p.length)] + Math.floor(Math.random() * 900000 + 100000);
+        }
+
+        function saveAccounts() {
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(accounts));
+        }
+
+        function loadAccounts() {
+            try {
+                const raw = localStorage.getItem(STORAGE_KEY);
+                if (raw) return JSON.parse(raw);
+            } catch (e) {}
+            return [];
+        }
+
+        function updateSidebar() {
+            if (accounts.length === 0) {
+                sidebarAccounts.innerHTML =
+                    `<div style="color:#5a708a;font-size:0.75rem;padding:8px 16px;">هیچ حسابی ساخته نشده</div>`;
+                sidebarEmail.textContent = '---';
+                return;
+            }
+
+            let html = '';
+            accounts.forEach((acc, index) => {
+                const isActive = currentAccount && acc.display === currentAccount.display;
+                const shortAddr = acc.display.length > 25 ? acc.display.substring(0, 22) + '...' : acc.display;
+                html += `
+                    <div class="menu-item account-item ${isActive ? 'active' : ''}" data-account-index="${index}">
+                        <i class="fas fa-envelope" style="font-size:0.7rem;"></i>
+                        <span style="direction:ltr;font-size:0.75rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${shortAddr}</span>
+                        ${isActive ? '<span class="check">✓</span>' : ''}
+                    </div>
+                `;
+            });
+            sidebarAccounts.innerHTML = html;
+
+            document.querySelectorAll('[data-account-index]').forEach(el => {
+                el.addEventListener('click', function() {
+                    const idx = parseInt(this.dataset.accountIndex);
+                    if (accounts[idx]) {
+                        switchAccount(idx);
+                    }
+                });
+            });
+
+            if (currentAccount) {
+                sidebarEmail.textContent = currentAccount.display;
+            }
+            statAccounts.textContent = accounts.length;
+            const unread = messages.filter(m => !m.isRead).length || 0;
+            sidebarBadge.textContent = unread;
+        }
+
+        async function switchAccount(index) {
+            if (index < 0 || index >= accounts.length) return;
+            currentAccount = accounts[index];
+            emailDisplay.textContent = currentAccount.display;
+            selectedId = null;
+            msgBodyEl.classList.remove('show');
+            msgBodyEl.innerHTML = '';
+            updateSidebar();
+            await fetchMessages(true);
+            toast(`📬 تغییر به ${currentAccount.display}`, 'info');
+            closeSidebar();
+        }
+
+        function renderInbox() {
+            if (!messages || messages.length === 0) {
+                inboxEl.innerHTML = `
+                    <div class="empty-box">
+                        <i class="fas fa-inbox"></i>
+                        <div>📭 صندوق ورودی خالی است</div>
+                        <div class="sub-text">📤 منتظر دریافت ایمیل باش...</div>
+                    </div>
+                `;
+                msgBodyEl.classList.remove('show');
+                msgBodyEl.innerHTML = '';
+                selectedId = null;
+                return;
+            }
+
+            let unread = 0;
+            let html = '';
+            messages.forEach(msg => {
+                const from = msg.from?.[0]?.address || 'ناشناس';
+                const subject = msg.subject || '(بدون عنوان)';
+                const date = msg.createdAt ? formatDate(msg.createdAt) : '';
+                const snippet = msg.intro || msg.text?.substring(0, 80) || '...';
+                const isSelected = (msg.id === selectedId);
+                const isRead = msg.isRead || false;
+                if (!isRead) unread++;
+
+                html += `
+                    <div class="msg-item ${isSelected ? 'active' : ''}" data-id="${msg.id}">
+                        <div class="msg-top">
+                            <div class="from"><i class="fas fa-user-circle"></i> ${escapeHtml(from)}${!isRead ? '<span class="badge-unread">🆕 جدید</span>' : ''}</div>
+                            <div class="date">🕐 ${date}</div>
+                        </div>
+                        <div class="subject">${escapeHtml(subject)}</div>
+                        <div class="snippet">${escapeHtml(snippet)}</div>
+                    </div>
+                `;
+            });
+
+            inboxEl.innerHTML = html;
+            unreadCount.textContent = `${unread} نخونده`;
+            statUnread.textContent = unread;
+            statEmails.textContent = messages.length;
+            sidebarBadge.textContent = unread;
+            statLast.textContent = getTime();
+
+            document.querySelectorAll('.msg-item').forEach(el => {
+                el.addEventListener('click', function() {
+                    const id = this.dataset.id;
+                    if (id) fetchMessageBody(id);
+                });
+            });
+        }
+
+        async function fetchMessages(showToastMsg = true) {
+            if (!currentAccount || !currentAccount.token) {
+                messages = [];
+                renderInbox();
+                return;
+            }
+
+            try {
+                const res = await fetch(`${API}/messages`, {
+                    headers: { 'Authorization': `Bearer ${currentAccount.token}` }
+                });
+                if (!res.ok) throw new Error('خطا');
+                const data = await res.json();
+                messages = data['hydra:member'] || [];
+
+                if (selectedId && !messages.find(m => m.id === selectedId)) {
+                    selectedId = null;
+                    msgBodyEl.classList.remove('show');
+                    msgBodyEl.innerHTML = '';
+                }
+
+                renderInbox();
+                updateSidebar();
+                if (showToastMsg && messages.length > 0 && !isInitializing) {
+                    toast(`📬 ${messages.length} پیام`, 'info');
+                }
+            } catch (err) {
+                console.error(err);
+                messages = [];
+                renderInbox();
+                if (showToastMsg && !isInitializing) toast('❌ خطا در دریافت', 'error');
+            }
+        }
+
+        async function fetchMessageBody(id) {
+            if (!currentAccount || !currentAccount.token) return;
+            try {
+                const res = await fetch(`${API}/messages/${id}`, {
+                    headers: { 'Authorization': `Bearer ${currentAccount.token}` }
+                });
+                if (!res.ok) throw new Error('خطا');
+                const data = await res.json();
+
+                if (!data.isRead) {
+                    await fetch(`${API}/messages/${id}`, {
+                        method: 'PATCH',
+                        headers: {
+                            'Authorization': `Bearer ${currentAccount.token}`,
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ isRead: true })
+                    });
+                }
+
+                selectedId = id;
+
+                let body = data.text || data.html || '(متن پیام موجود نیست)';
+                if (data.html) {
+                    const tmp = document.createElement('div');
+                    tmp.innerHTML = data.html;
+                    body = tmp.textContent || data.html;
+                }
+
+                const from = data.from?.[0]?.address || 'ناشناس';
+                const subject = data.subject || '(بدون عنوان)';
+                const date = data.createdAt ? formatDate(data.createdAt) : '';
+
+                msgBodyEl.innerHTML = `
+                    <div class="msg-meta">
+                        <div><strong>📤 از:</strong> ${escapeHtml(from)}</div>
+                        <div><strong>📌 موضوع:</strong> ${escapeHtml(subject)}</div>
+                        <div style="font-size:0.7rem;margin-top:4px;">🕐 ${date}</div>
+                    </div>
+                    <div>${escapeHtml(body)}</div>
+                `;
+                msgBodyEl.classList.add('show');
+
+                await fetchMessages(false);
+            } catch (err) {
+                console.error(err);
+                msgBodyEl.innerHTML = '❌ خطا در دریافت پیام';
+                msgBodyEl.classList.add('show');
+                toast('❌ خطا', 'error');
+            }
+        }
+
+        async function createAccount() {
+            try {
+                const domainRes = await fetch(`${API}/domains`);
+                if (!domainRes.ok) throw new Error('دریافت دامنه');
+                const domains = await domainRes.json();
+                const tmDomain = domains['hydra:member']?.[0]?.domain || 'mail.tm';
+
+                const user = genUsername();
+                const address = `${user}@${tmDomain}`;
+                const password = 'Temp@' + Math.random().toString(36).slice(2, 8) + 'Aa1!';
+
+                const accountRes = await fetch(`${API}/accounts`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ address, password })
+                });
+                if (!accountRes.ok) throw new Error('ساخت اکانت');
+                const acc = await accountRes.json();
+
+                const tokenRes = await fetch(`${API}/token`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ address, password })
+                });
+                if (!tokenRes.ok) throw new Error('دریافت توکن');
+                const tokenData = await tokenRes.json();
+
+                const newAccount = {
+                    id: acc.id,
+                    address: acc.address,
+                    token: tokenData.token,
+                    display: address,
+                    created: new Date().toISOString()
+                };
+
+                const exists = accounts.find(a => a.display === address);
+                if (!exists) {
+                    accounts.push(newAccount);
+                    saveAccounts();
+                }
+
+                currentAccount = newAccount;
+                emailDisplay.textContent = address;
+                selectedId = null;
+                msgBodyEl.classList.remove('show');
+                msgBodyEl.innerHTML = '';
+                updateSidebar();
+
+                await fetchMessages(false);
+                if (!isInitializing) {
+                    toast(`✅ ${address}`, 'success');
+                }
+                closeSidebar();
+            } catch (err) {
+                console.error(err);
+                if (!isInitializing) toast('❌ خطا: ' + err.message, 'error');
+            }
+        }
+
+        async function deleteAll() {
+            if (!currentAccount || messages.length === 0) {
+                toast('هیچ پیامی نیست', 'info');
+                return;
+            }
+            if (!confirm('همه پیام‌ها پاک می‌شوند؟')) return;
+            try {
+                for (const msg of messages) {
+                    await fetch(`${API}/messages/${msg.id}`, {
+                        method: 'DELETE',
+                        headers: { 'Authorization': `Bearer ${currentAccount.token}` }
+                    });
+                }
+                messages = [];
+                selectedId = null;
+                msgBodyEl.classList.remove('show');
+                msgBodyEl.innerHTML = '';
+                renderInbox();
+                updateSidebar();
+                toast('🗑️ همه پاک شد', 'success');
+            } catch (err) {
+                toast('❌ خطا', 'error');
+            }
+        }
+
+        function copyEmail() {
+            const addr = currentAccount?.display || emailDisplay.textContent;
+            if (!addr || addr === '---') {
+                toast('هیچ آدرسی نیست', 'error');
+                return;
+            }
+            navigator.clipboard?.writeText(addr).then(() => {
+                toast(`✅ کپی شد: ${addr}`, 'success');
+            }).catch(() => {
+                const ta = document.createElement('textarea');
+                ta.value = addr;
+                document.body.appendChild(ta);
+                ta.select();
+                document.execCommand('copy');
+                ta.remove();
+                toast(`✅ کپی شد: ${addr}`, 'success');
+            });
+        }
+
+        function startAutoRefresh() {
+            if (refreshInterval) clearInterval(refreshInterval);
+            refreshInterval = setInterval(() => {
+                if (currentAccount) fetchMessages(false);
+            }, 15000);
+        }
+
+        function updateClock() {
+            statLast.textContent = getTime();
+        }
+        setInterval(updateClock, 10000);
+        updateClock();
+
+        document.getElementById('openSidebar').addEventListener('click', openSidebar);
+        document.getElementById('closeSidebar').addEventListener('click', closeSidebar);
+        overlayEl.addEventListener('click', closeSidebar);
+
+        document.getElementById('newEmailBtn').addEventListener('click', createAccount);
+        document.getElementById('sidebarNewEmail').addEventListener('click', function() {
+            createAccount();
+            closeSidebar();
+        });
+
+        document.getElementById('refreshBtn').addEventListener('click', async function() {
+            if (!currentAccount) { await createAccount(); } else { await fetchMessages(true); }
+        });
+        document.getElementById('sidebarRefresh').addEventListener('click', async function() {
+            if (!currentAccount) { await createAccount(); } else { await fetchMessages(true); }
+            closeSidebar();
+        });
+
+        document.getElementById('copyBtn').addEventListener('click', copyEmail);
+        emailDisplay.addEventListener('click', copyEmail);
+
+        document.getElementById('deleteAllBtn').addEventListener('click', deleteAll);
+
+        async function init() {
+            accounts = loadAccounts();
+            if (accounts.length > 0) {
+                currentAccount = accounts[accounts.length - 1];
+                emailDisplay.textContent = currentAccount.display;
+                updateSidebar();
+                await fetchMessages(false);
+            } else {
+                await createAccount();
+            }
+            isInitializing = false;
+            startAutoRefresh();
+        }
+
+        init().catch(console.error);
+    </script>
+</body>
+  </html>
